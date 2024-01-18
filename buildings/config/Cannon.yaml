@@ -1,0 +1,41 @@
+
+---
+kind: BuildingKind
+spec:
+  category: factory
+  name: Cannon
+  description: Helps you attack adjacent buildings
+  model: 08-01
+  color: 3
+  contract:
+    file: ../contracts/Cannon.sol
+  plugin:
+    file: ../js/Cannon.js
+  materials:
+  - name: Red Goo
+    quantity: 60
+  - name: Green Goo
+    quantity: 25
+  - name: Blue Goo
+    quantity: 25
+  inputs:
+  - name: Red Goo
+    quantity: 30
+  - name: Green Goo
+    quantity: 30
+  - name: Blue Goo
+    quantity: 30
+  outputs:
+  - name: no output
+    quantity: 1
+
+---
+kind: Item
+spec:
+  name: no output
+  icon: 22-170
+  goo:
+    red: 15
+    green: 15
+    blue: 15
+  stackable: false

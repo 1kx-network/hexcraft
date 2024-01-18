@@ -1,0 +1,41 @@
+
+---
+kind: BuildingKind
+spec:
+  category: factory
+  name: Barrier
+  description: Protect your Castle from attacks
+  model: 01-08
+  color: 3
+  contract:
+    file: ../contracts/Barrier.sol
+  plugin:
+    file: ../js/Barrier.js
+  materials:
+  - name: Red Goo
+    quantity: 10
+  - name: Green Goo
+    quantity: 60
+  - name: Blue Goo
+    quantity: 60
+  inputs:
+  - name: Red Goo
+    quantity: 30
+  - name: Green Goo
+    quantity: 30
+  - name: Blue Goo
+    quantity: 30
+  outputs:
+  - name: no output
+    quantity: 1
+
+---
+kind: Item
+spec:
+  name: no output
+  icon: 22-170
+  goo:
+    red: 15
+    green: 15
+    blue: 15
+  stackable: false
