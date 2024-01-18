@@ -11,7 +11,7 @@ echo "-----\n"
 node ./node_modules/@playmint/ds-cli/dist/ds.js  apply -n $1 -k $2 -f config/WizardsMaze.yaml
 
 echo "-----\n"
-echo "Deploying crafting blueprints\n"
+echo "Deploying engineering blueprints\n"
 
 node ./node_modules/@playmint/ds-cli/dist/ds.js  apply -n $1 -k $2 -f config/Blacksmith.yaml
 echo "-----\n"

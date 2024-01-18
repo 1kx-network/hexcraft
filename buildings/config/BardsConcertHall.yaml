@@ -26,13 +26,13 @@ spec:
     - name: Red Goo
       quantity: 50
   outputs:
-    - name: Taylor Swifts Guitar
+    - name: "Taylor Swift's Guitar"
       quantity: 1
 
 ---
 kind: Item
 spec:
-  name: Taylor Swifts Guitar
+  name: "Taylor Swift's Guitar"
   icon: 19-35
   goo:
     red: 25
