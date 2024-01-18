@@ -25,6 +25,9 @@ contract FightersArena is BuildingKind {
         ds.getDispatcher().dispatch(abi.encodeCall(Actions.CRAFT, (buildingInstance)));
     }
 
+    function construct(Game ds, bytes24 buildingInstance, bytes24, /*actor*/ bytes memory /*payload*/ ) public {
+    }
+
     function GetState(Game ds) internal returns (State) {
         return ds.getState();
     }
