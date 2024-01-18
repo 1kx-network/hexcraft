@@ -22,7 +22,7 @@ contract BasicFactory is BuildingKind {
         (bytes24 bag, uint8 slot, uint64 balance) = getItemSlot(state, actor, CRAFTING_HAMMER_ITEM_ID);
         require((bag != 0), "you need a crafting hammer to construct this building");
 
-        uint64 newBalance = balance - qty;
+        uint64 newBalance = balance - 1;
         if (newBalance == 0) {
             state.clearItemSlot(bag, slot);
         } else {
