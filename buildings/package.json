@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@playmint/ds-cli": "^0.0.16"
+  }
+}
