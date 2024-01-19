@@ -1,0 +1,19 @@
+kind: BuildingKind
+spec:
+  name: MOBA
+  description: "Play MOBA"
+  category: custom
+  model: 11-03
+  color: 1
+  contract:
+    file: ./MOBA.sol
+  plugin:
+    file: ./MOBA.js
+    alwaysActive: true
+  materials:
+    - name: Green Goo
+      quantity: 10
+    - name: Blue Goo
+      quantity: 10
+    - name: Red Goo
+      quantity: 10
