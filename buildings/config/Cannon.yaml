@@ -3,7 +3,7 @@ kind: BuildingKind
 spec:
   category: factory
   name: Cannon
-  description: Helps you attack adjacent buildings
+  description: Helps you attack adjacent buildings, needs a construction hammer to build
   model: 08-01
   color: 3
   contract:
@@ -31,7 +31,7 @@ spec:
 ---
 kind: Item
 spec:
-  name: no output
+  name: spam
   icon: 22-170
   goo:
     red: 1

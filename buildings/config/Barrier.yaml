@@ -3,7 +3,7 @@ kind: BuildingKind
 spec:
   category: factory
   name: Barrier
-  description: Protect your Castle from attacks
+  description: Protect your Castle from attacks, needs a construction hammer to build
   model: 01-08
   color: 3
   contract:
