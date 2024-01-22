@@ -1,14 +1,14 @@
 kind: BuildingKind
 spec:
-  name: MOBA
-  description: "Play MOBA"
+  name: Headquarter
+  description: "Play Defense of the Hexwood"
   category: custom
   model: 11-03
   color: 1
   contract:
-    file: ./MOBA.sol
+    file: ./Headquarter.sol
   plugin:
-    file: ./MOBA.js
+    file: ./Headquarter.js
     alwaysActive: true
   materials:
     - name: Green Goo

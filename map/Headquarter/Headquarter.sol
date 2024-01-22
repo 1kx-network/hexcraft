@@ -11,10 +11,11 @@ import "@ds/utils/LibString.sol";
 
 using Schema for State;
 
-contract MOBA is BuildingKind {
+contract Headquarter is BuildingKind {
     bytes24[] private redTeam;
     bytes24[] private blueTeam;
 
+    bytes24[] private playerClassSelected;
     // function declerations only used to create signatures for the use payload
     // these functions do not have their own definitions
     function join() external {}
@@ -44,6 +45,10 @@ contract MOBA is BuildingKind {
             _reset(ds, buildingInstance);
         }
     }
+
+    /*
+     * Functions to handle game logic
+     */
 
     function _join(
         Game ds,
@@ -241,7 +246,21 @@ contract MOBA is BuildingKind {
                 (buildingId, "buildingKindIdBlue", bytes32(0))
             )
         );
+
+        delete playerClassSelected;
+        dispatcher.dispatch(
+            abi.encodeCall(
+                Actions.SET_DATA_ON_BUILDING,
+                (buildingId, "buildingKindIdBlue", bytes32(0))
+            )
+        );
     }
+
+    /*
+     * Functions to handle character classes
+    /*
+     * Helper functions
+     */
 
     function getBuildingCounts(
         State state,

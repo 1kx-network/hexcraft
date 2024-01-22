@@ -1,22 +1,22 @@
 ---
 kind: BuildingKind
 spec:
-  category: factory
-  name: Barrier
-  description: Protect your Castle from attacks, needs a construction hammer to build
-  model: 01-08
+  category: custom
+  name: Cannon
+  description: Helps you attack adjacent buildings, needs a construction hammer to build
+  model: 08-01
   color: 3
   contract:
-    file: ../contracts/Barrier.sol
+    file: ../contracts/Cannon.sol
   plugin:
-    file: ../js/Barrier.js
+    file: ../js/Cannon.js
   materials:
     - name: Red Goo
-      quantity: 10
+      quantity: 60
     - name: Green Goo
-      quantity: 60
+      quantity: 25
     - name: Blue Goo
-      quantity: 60
+      quantity: 25
   inputs:
     - name: Red Goo
       quantity: 2

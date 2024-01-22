@@ -1,92 +1,52 @@
-import ds from 'downstream';
-
-var numDuckStart = 0;
-var numBurgerStart = 0;
-
-var numDuck = 0;
-var numBurger = 0;
-
-var gameActive = false;
+import ds from "downstream";
 
 export default async function update(state) {
   // uncomment this to browse the state object in browser console
   // this will be logged when selecting a unit and then selecting an instance of this building
   //logState(state);
 
-  const countBuildings = (buildingsArray, type) => {
-    return buildingsArray.filter(building =>
-      building.kind?.name?.value.toLowerCase().includes(type)
-    ).length;
-  }
+  const selectedTile = getSelectedTile(state);
+  const selectedBuilding =
+    selectedTile && getBuildingOnTile(state, selectedTile);
+  const canCraft =
+    selectedBuilding && inputsAreCorrect(state, selectedBuilding);
+  // uncomment this to be restrictve about which units can craft
+  // this is a client only check - to enforce it in contracts make
+  // similar changes in BasicFactory.sol
+  //    && unitIsFriendly(state, selectedBuilding)
+  const craft = () => {
+    const mobileUnit = getMobileUnit(state);
 
-  const startGame = () => {
-    const buildingsArray = state.world?.buildings || [];
+    if (!mobileUnit) {
+      console.log("no selected unit");
+      return;
+    }
 
-    numDuckStart = countBuildings(buildingsArray, "duck");
-    numBurgerStart = countBuildings(buildingsArray, "burger");
+    ds.dispatch({
+      name: "BUILDING_USE",
+      args: [selectedBuilding.id, mobileUnit.id, []],
+    });
 
-    numDuck = 0;
-    numBurger = 0;
-    gameActive = true;
-  }
-
-  const endGame = () => {
-    const buildingsArray = state.world?.buildings || [];
-
-    const totalDuck = countBuildings(buildingsArray, "duck");
-    const totalBurger = countBuildings(buildingsArray, "burger");
-
-    numDuck = totalDuck - numDuckStart;
-    numBurger = totalBurger - numBurgerStart;
-    gameActive = false;
-  }
-
-  const updateNumDuckBurger = () => {
-    const buildingsArray = state.world?.buildings || [];
-
-    const totalDuck = countBuildings(buildingsArray, "duck");
-    const totalBurger = countBuildings(buildingsArray, "burger");
-
-    numDuck = totalDuck - numDuckStart;
-    numBurger = totalBurger - numBurgerStart;
-  }
-
-  if (gameActive) {
-    updateNumDuckBurger();
-  }
+    console.log("Craft dispatched");
+  };
 
   return {
     version: 1,
     components: [
       {
-        id: 'duck-burger-counter',
-        type: 'building',
+        id: "blue-base",
+        type: "building",
         content: [
           {
-            id: 'default',
-            type: 'inline',
-            html: `
-                            🦆: ${numDuck}</br>
-                            🍔: ${numBurger}</br></br>
-                            ${gameActive
-                ? `duck burger is live!</br></br>
-                                    click "End & Count Score" to see who won`
-                : `click "Start Game" to play`
-              }
-                        `,
-
+            id: "default",
+            type: "inline",
+            html: "<p>Fill the input slots to enable crafing</p>",
             buttons: [
               {
-                text: 'Start Game',
-                type: 'action',
-                action: startGame,
-                disabled: gameActive,
-              },
-              {
-                text: 'End Game',
-                type: 'action',
-                action: endGame,
-                disabled: !gameActive,
+                text: "Craft",
+                type: "action",
+                action: craft,
+                disabled: !canCraft,
               },
             ],
           },
@@ -106,7 +66,9 @@ function getSelectedTile(state) {
 }
 
 function getBuildingOnTile(state, tile) {
-  return (state?.world?.buildings || []).find((b) => tile && b.location?.tile?.id === tile.id);
+  return (state?.world?.buildings || []).find(
+    (b) => tile && b.location?.tile?.id === tile.id
+  );
 }
 
 // returns an array of items the building expects as input
@@ -116,7 +78,11 @@ function getRequiredInputItems(building) {
 
 // search through all the bags in the world to find those belonging to this building
 function getBuildingBags(state, building) {
-  return building ? (state?.world?.bags || []).filter((bag) => bag.equipee?.node.id === building.id) : [];
+  return building
+    ? (state?.world?.bags || []).filter(
+        (bag) => bag.equipee?.node.id === building.id
+      )
+    : [];
 }
 
 // get building input slots
@@ -146,7 +112,7 @@ function inputsAreCorrect(state, building) {
 }
 
 function logState(state) {
-  console.log('State sent to pluging:', state);
+  console.log("State sent to pluging:", state);
 }
 
 const friendlyPlayerAddresses = [
@@ -158,23 +124,34 @@ function unitIsFriendly(state, selectedBuilding) {
   return (
     unitIsBuildingOwner(mobileUnit, selectedBuilding) ||
     unitIsBuildingAuthor(mobileUnit, selectedBuilding) ||
-    friendlyPlayerAddresses.some((addr) => unitOwnerConnectedToWallet(state, mobileUnit, addr))
+    friendlyPlayerAddresses.some((addr) =>
+      unitOwnerConnectedToWallet(state, mobileUnit, addr)
+    )
   );
 }
 
 function unitIsBuildingOwner(mobileUnit, selectedBuilding) {
   //console.log('unit owner id:',  mobileUnit?.owner?.id, 'building owner id:', selectedBuilding?.owner?.id);
-  return mobileUnit?.owner?.id && mobileUnit?.owner?.id === selectedBuilding?.owner?.id;
+  return (
+    mobileUnit?.owner?.id &&
+    mobileUnit?.owner?.id === selectedBuilding?.owner?.id
+  );
 }
 
 function unitIsBuildingAuthor(mobileUnit, selectedBuilding) {
   //console.log('unit owner id:',  mobileUnit?.owner?.id, 'building author id:', selectedBuilding?.kind?.owner?.id);
-  return mobileUnit?.owner?.id && mobileUnit?.owner?.id === selectedBuilding?.kind?.owner?.id;
+  return (
+    mobileUnit?.owner?.id &&
+    mobileUnit?.owner?.id === selectedBuilding?.kind?.owner?.id
+  );
 }
 
 function unitOwnerConnectedToWallet(state, mobileUnit, walletAddress) {
   //console.log('Checking player:',  state?.player, 'controls unit', mobileUnit, walletAddress);
-  return mobileUnit?.owner?.id == state?.player?.id && state?.player?.addr == walletAddress;
+  return (
+    mobileUnit?.owner?.id == state?.player?.id &&
+    state?.player?.addr == walletAddress
+  );
 }
 
 // the source for this code is on github where you can find other example buildings:

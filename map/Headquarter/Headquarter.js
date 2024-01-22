@@ -8,7 +8,7 @@ export default async function update(state) {
   //
   // Action handler functions
   //
-  console.log('update 0')
+  console.log("update 0");
 
   // An action can set a form submit handler which will be called after the action along with the form values
   let handleFormSubmit;
@@ -75,21 +75,20 @@ export default async function update(state) {
   // so we need to find all HQs on the map and update them each in turn
   //
   // for now we just update the first we find
-  const dvbBuildingName = "MOBA";
+  const dvbBuildingName = "Headquarter";
   const selectedBuilding = state.world?.buildings.find(
     (b) => b.kind?.name?.value == dvbBuildingName
   );
 
-
   // early out if we don't have any buildings or state isn't ready
   if (!selectedBuilding || !state?.world?.buildings) {
-    console.log("NO MOBA BUILDING FOUND 8");
+    console.log("NO HEADQUARTER BUILDING FOUND 8");
     return {
       version: 1,
       map: [],
       components: [
         {
-          id: "moba",
+          id: "headquarter",
           type: "building",
           content: [
             {
@@ -104,7 +103,6 @@ export default async function update(state) {
     };
   }
 
-
   const {
     gameActive,
     buildingKindIdRed,
@@ -118,11 +116,11 @@ export default async function update(state) {
     buildingKindIdBlue,
     redTeamLength,
     blueTeamLength,
-  })
+  });
   const localBuildings = range5(state, selectedBuilding);
   const redCount = countBuildings(localBuildings, buildingKindIdRed);
   const blueCount = countBuildings(localBuildings, buildingKindIdBlue);
-  console.log({ localBuildings, redCount, blueCount })
+  console.log({ localBuildings, redCount, blueCount });
   // check current game state:
   // - NotStarted : GameActive == false
   // - Running : GameActive == true && endBlock < currentBlock
@@ -137,12 +135,9 @@ export default async function update(state) {
 
   const canJoin = !gameActive;
 
-  const canStart =
-    !gameActive &&
-    redTeamLength > 0 &&
-    blueTeamLength > 0
+  const canStart = !gameActive && redTeamLength > 0 && blueTeamLength > 0;
 
-  console.log({ canStart, canJoin })
+  console.log({ canStart, canJoin });
   if (canJoin) {
     htmlBlock += `<p>total players: ${redTeamLength + blueTeamLength}</p></br>`;
   }
@@ -163,9 +158,7 @@ export default async function update(state) {
 
     if (unitTeam === "") {
       for (let i = 0; i < blueTeamLength; i++) {
-        if (
-          mobileUnit.id == getHQTeamUnit(selectedBuilding, "blue", i)
-        ) {
+        if (mobileUnit.id == getHQTeamUnit(selectedBuilding, "blue", i)) {
           unitTeam = "🔵";
           break;
         }
@@ -180,12 +173,10 @@ export default async function update(state) {
     }
   }
 
-  console.log({ isOnTeam })
+  console.log({ isOnTeam });
 
   if (!gameActive) {
-
     if (!isOnTeam) {
-
       buttonList.push({
         text: `Join Game`,
         type: "action",
@@ -195,8 +186,7 @@ export default async function update(state) {
     } else {
       // Check reason why game can't start
       const waitingForStartCondition =
-        redTeamLength != blueTeamLength ||
-        redTeamLength + blueTeamLength < 2;
+        redTeamLength != blueTeamLength || redTeamLength + blueTeamLength < 2;
       let startConditionMessage = "";
       if (waitingForStartCondition) {
         if (redTeamLength + blueTeamLength < 2) {
@@ -207,9 +197,7 @@ export default async function update(state) {
       }
 
       buttonList.push({
-        text: waitingForStartCondition
-          ? startConditionMessage
-          : "Start",
+        text: waitingForStartCondition ? startConditionMessage : "Start",
         type: "action",
         action: start,
         disabled: !canStart || redTeamLength != blueTeamLength,
@@ -222,27 +210,24 @@ export default async function update(state) {
             <h3>Select Team Buildings</h3>
             <p>🔴 Team 🔴</p>
             ${getBuildingKindSelectHtml(
-    state,
-    redBuildingTopId,
-    "buildingKindIdRed"
-  )}
+              state,
+              redBuildingTopId,
+              "buildingKindIdRed"
+            )}
             <p>🔵 Team 🔵</p>
             ${getBuildingKindSelectHtml(
-    state,
-    blueBuildingTopId,
-    "buildingKindIdBlue"
-  )}
+              state,
+              blueBuildingTopId,
+              "buildingKindIdBlue"
+            )}
         `;
 
   if (gameActive) {
     // Display selected team buildings
     const buildingKindRed =
-      state.world.buildingKinds.find((b) => b.id === buildingKindIdRed) ||
-      {};
+      state.world.buildingKinds.find((b) => b.id === buildingKindIdRed) || {};
     const buildingKindBlue =
-      state.world.buildingKinds.find(
-        (b) => b.id === buildingKindIdBlue
-      ) || {};
+      state.world.buildingKinds.find((b) => b.id === buildingKindIdBlue) || {};
     htmlBlock += `
             <h3>Team Buildings:</h3>
             <p>Team 🔴: ${buildingKindRed.name?.value}</p>
@@ -257,8 +242,6 @@ export default async function update(state) {
             <p style="text-align: center;">${redWon ? "🔴🏆🔴" : "🔵🏆🔵"}</p>
             `;
     }
-
-
   }
   // Reset is always offered (requires some trust!)
   buttonList.push({
@@ -268,13 +251,13 @@ export default async function update(state) {
     disabled: false,
   });
 
-  console.log({ htmlBlock })
+  console.log({ htmlBlock });
   return {
     version: 1,
     map: [],
     components: [
       {
-        id: "moba",
+        id: "headquarter",
         type: "building",
         content: [
           {
@@ -329,17 +312,16 @@ function getBuildingKindSelectHtml(state, buildingTopId, selectId) {
   return `
         <select id="${selectId}" name="${selectId}">
             ${state.world.buildingKinds
-      .filter(
-        (b) =>
-          b.model &&
-          b.model.value.substring(3, 5) === buildingTopId
-      )
-      .map(
-        (b) => `
+              .filter(
+                (b) =>
+                  b.model && b.model.value.substring(3, 5) === buildingTopId
+              )
+              .map(
+                (b) => `
                 .filter((b) => b.model && b.model.value.substring(3, 5) === buildingTopId)
                     <option value="${b.id}">${b.name.value}</option>
                 `
-      )}
+              )}
         </select>
     `;
 }
@@ -355,8 +337,8 @@ function getMobileUnit(state) {
 function getEquipeeBags(state, equipee) {
   return equipee
     ? (state?.world?.bags || []).filter(
-      (bag) => bag.equipee?.node.id === equipee.id
-    )
+        (bag) => bag.equipee?.node.id === equipee.id
+      )
     : [];
 }
 
@@ -366,25 +348,19 @@ function logState(state) {
 
 // get an array of buildings withiin 5 tiles of building
 function range5(state, building) {
-  const range = 5;
+  const range = 20;
   const tileCoords = getTileCoords(building?.location?.tile?.coords);
   let i = 0;
   const foundBuildings = [];
   for (let q = tileCoords[0] - range; q <= tileCoords[0] + range; q++) {
-    for (
-      let r = tileCoords[1] - range;
-      r <= tileCoords[1] + range;
-      r++
-    ) {
+    for (let r = tileCoords[1] - range; r <= tileCoords[1] + range; r++) {
       let s = -q - r;
       let nextTile = [q, r, s];
       if (distance(tileCoords, nextTile) <= range) {
         state?.world?.buildings.forEach((b) => {
           if (!b?.location?.tile?.coords) return;
 
-          const buildingCoords = getTileCoords(
-            b.location.tile.coords
-          );
+          const buildingCoords = getTileCoords(b.location.tile.coords);
           if (
             buildingCoords[0] == nextTile[0] &&
             buildingCoords[1] == nextTile[1] &&
@@ -464,7 +440,6 @@ function getKVPs(buildingInstance) {
 const countBuildings = (buildingsArray, kindID) => {
   return buildingsArray.filter((b) => b.kind?.id == kindID).length;
 };
-
 
 // the source for this code is on github where you can find other example buildings:
 // https://github.com/playmint/ds/tree/main/contracts/src/example-plugins

@@ -34,7 +34,7 @@ export default async function update(state) {
         version: 1,
         components: [
             {
-                id: 'basic-factory',
+                id: 'red-base',
                 type: 'building',
                 content: [
                     {
