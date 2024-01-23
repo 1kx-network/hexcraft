@@ -18,11 +18,11 @@ spec:
     - name: Blue Goo
       quantity: 10
   inputs:
-    - name: Red Goo
-      quantity: 30
     - name: Green Goo
       quantity: 30
     - name: Blue Goo
+      quantity: 30
+    - name: Red Goo
       quantity: 30
   outputs:
     - name: Crafting Hammer
