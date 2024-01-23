@@ -17,24 +17,3 @@ spec:
       quantity: 60
     - name: Blue Goo
       quantity: 60
-  inputs:
-    - name: Red Goo
-      quantity: 2
-    - name: Green Goo
-      quantity: 2
-    - name: Blue Goo
-      quantity: 2
-  outputs:
-    - name: spam
-      quantity: 1
-
----
-kind: Item
-spec:
-  name: spam
-  icon: 22-170
-  goo:
-    red: 1
-    green: 1
-    blue: 1
-  stackable: false

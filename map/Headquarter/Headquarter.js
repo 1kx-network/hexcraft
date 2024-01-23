@@ -1,14 +1,14 @@
 import ds from "downstream";
 
 const nullBytes24 = `0x${"00".repeat(24)}`;
-const redBuildingTopId = "14";
-const blueBuildingTopId = "14";
+const redBuildingTopId = "03";
+const blueBuildingTopId = "03";
 
 export default async function update(state) {
   //
   // Action handler functions
   //
-  console.log("update 0");
+  // console.log("update 0");
 
   // An action can set a form submit handler which will be called after the action along with the form values
   let handleFormSubmit;
@@ -110,17 +110,18 @@ export default async function update(state) {
     redTeamLength,
     blueTeamLength,
   } = getHQData(selectedBuilding);
-  console.log({
-    gameActive,
-    buildingKindIdRed,
-    buildingKindIdBlue,
-    redTeamLength,
-    blueTeamLength,
-  });
+  // console.log({
+  //   gameActive,
+  //   buildingKindIdRed,
+  //   buildingKindIdBlue,
+  //   redTeamLength,
+  //   blueTeamLength,
+  // });
   const localBuildings = range5(state, selectedBuilding);
   const redCount = countBuildings(localBuildings, buildingKindIdRed);
   const blueCount = countBuildings(localBuildings, buildingKindIdBlue);
-  console.log({ localBuildings, redCount, blueCount });
+  // console.log({ localBuildings, redCount, blueCount });
+
   // check current game state:
   // - NotStarted : GameActive == false
   // - Running : GameActive == true && endBlock < currentBlock
@@ -137,7 +138,7 @@ export default async function update(state) {
 
   const canStart = !gameActive && redTeamLength > 0 && blueTeamLength > 0;
 
-  console.log({ canStart, canJoin });
+  // console.log({ canStart, canJoin });
   if (canJoin) {
     htmlBlock += `<p>total players: ${redTeamLength + blueTeamLength}</p></br>`;
   }
@@ -173,7 +174,7 @@ export default async function update(state) {
     }
   }
 
-  console.log({ isOnTeam });
+  // console.log({ isOnTeam });
 
   if (!gameActive) {
     if (!isOnTeam) {

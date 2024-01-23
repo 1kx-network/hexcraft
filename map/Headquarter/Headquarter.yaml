@@ -3,7 +3,7 @@ spec:
   name: Headquarter
   description: "Play Defense of the Hexwood"
   category: custom
-  model: 11-03
+  model: 11-07
   color: 1
   contract:
     file: ./Headquarter.sol

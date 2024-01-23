@@ -13,7 +13,7 @@ import "Utils.sol";
 using Schema for State;
 
 contract WizardsMaze is BuildingKind {
-    function use(Game ds, bytes24 buildingInstance, bytes24 actor, bytes memory /*payload*/ ) public {
+    function use(Game ds, bytes24 buildingInstance, bytes24 actor, bytes memory /*payload*/ ) override public {
 
         State state = getState(ds);
 
@@ -24,8 +24,5 @@ contract WizardsMaze is BuildingKind {
         require(!(unitHasItem(state, actor, TAYLOR_SWITFT_GUITAR_ITEM_ID)), "You are already carrying Taylor Swift's Guitar");
 
         ds.getDispatcher().dispatch(abi.encodeCall(Actions.CRAFT, (buildingInstance)));
-    }
-
-    function construct(Game ds, bytes24 buildingInstance, bytes24 /*actor*/, bytes memory /*payload*/ ) public {
     }
 }

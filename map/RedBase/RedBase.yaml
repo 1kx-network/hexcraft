@@ -3,7 +3,7 @@ spec:
   category: custom
   name: Red Base
   description: This is the red base
-  model: 14-14
+  model: 17-03
   color: 4
   contract:
     file: ./RedBase.sol

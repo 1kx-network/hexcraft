@@ -13,11 +13,11 @@ import "Utils.sol";
 using Schema for State;
 
 contract BasicFactory is BuildingKind {
-    function use(Game ds, bytes24 buildingInstance, bytes24, /*actor*/ bytes memory /*payload*/ ) public {
+    function use(Game ds, bytes24 buildingInstance, bytes24, /*actor*/ bytes memory /*payload*/ ) override public {
         ds.getDispatcher().dispatch(abi.encodeCall(Actions.CRAFT, (buildingInstance)));
     }
 
-    function construct(Game ds, bytes24 /*buildingInstance*/, bytes24 actor, bytes memory /*payload*/ ) public {
+    function construct(Game ds, bytes24 /*buildingInstance*/, bytes24 actor, bytes memory /*payload*/ ) override public {
 
         State state = getState(ds);
 

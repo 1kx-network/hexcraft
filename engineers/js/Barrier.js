@@ -36,21 +36,7 @@ export default async function update(state) {
       {
         id: "barrier",
         type: "building",
-        content: [
-          {
-            id: "default",
-            type: "inline",
-            html: "<p>Fill the input slots to enable crafing</p>",
-            buttons: [
-              {
-                text: "Craft",
-                type: "action",
-                action: craft,
-                disabled: !canCraft,
-              },
-            ],
-          },
-        ],
+        content: [],
       },
     ],
   };

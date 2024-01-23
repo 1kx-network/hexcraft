@@ -40,3 +40,20 @@ function getItemSlot(State state, bytes24 actor, bytes24 item) view returns (byt
     }
     return (0, 0, 0);
 }
+
+function bytes32ToString(bytes32 x) pure returns (string memory) {
+    bytes memory bytesString = new bytes(32);
+    uint charCount = 0;
+    for (uint j = 0; j < 32; j++) {
+        bytes1 char = bytes1(bytes32(uint(x) * 2 ** (8 * j)));
+        if (char != 0) {
+            bytesString[charCount] = char;
+            charCount++;
+        }
+    }
+    bytes memory bytesStringTrimmed = new bytes(charCount);
+    for (uint j = 0; j < charCount; j++) {
+        bytesStringTrimmed[j] = bytesString[j];
+    }
+    return string(bytesStringTrimmed);
+}

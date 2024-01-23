@@ -3,7 +3,7 @@ spec:
   category: custom
   name: Blue Base
   description: This is the blue base
-  model: 14-14
+  model: 17-03
   color: 0
   contract:
     file: ./BlueBase.sol

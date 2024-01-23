@@ -29,7 +29,7 @@ contract Headquarter is BuildingKind {
         bytes24 buildingInstance,
         bytes24 actor,
         bytes calldata payload
-    ) public {
+    ) override public {
         State state = GetState(ds);
 
         // decode payload and call one of _join, _start, _claim or _reset
@@ -182,8 +182,11 @@ contract Headquarter is BuildingKind {
                 buildingId
             );
 
-            require(redBuildings == 1, "Red team needs a base to start");
-            require(blueBuildings == 1, "Blue team needs a base to start");
+            require(redBuildings >= 1, "Red team needs a base to start");
+            require(blueBuildings >= 1, "Blue team needs a base to start");
+
+            require(redBuildings <= 1, "Red team has too much bases");
+            require(blueBuildings <= 1, "Blue team has too much bases");
         }
 
         // gameActive

@@ -1906,12 +1906,19 @@ spec:
   biome: DISCOVERED
   location: [6, -9, 3]
 
+#
+# special buildings for the MOBA game
+#
+
 ---
 kind: Building
 spec:
   name: Headquarter
   location: [1, -1, 0]
 
+#
+# Blue Base
+#
 ---
 kind: Building
 spec:
@@ -1921,5 +1928,81 @@ spec:
 ---
 kind: Building
 spec:
+  name: Bards Concert Hall
+  location: [-12, 9, 3]
+
+---
+kind: Building
+spec:
+  name: Clerics Tent
+  location: [-13, 10, 3]
+
+---
+kind: Building
+spec:
+  name: Fighters Arena
+  location: [-13, 11, 2]
+
+---
+kind: Building
+spec:
+  name: Paladins Armoury
+  location: [-12, 11, 1]
+
+---
+kind: Building
+spec:
+  name: Wizards Tower
+  location: [-11, 10, 1]
+
+---
+kind: Building
+spec:
+  name: Blacksmith
+  location: [-9, 6, 3]
+
+
+#
+# Red Base
+#
+---
+kind: Building
+spec:
   name: Red Base
-  location: [3, 8, -11]
+  location: [-10, 8, 2]
+
+---
+kind: Building
+spec:
+  name: Bards Concert Hall
+  location: [4, 9, -13]
+
+---
+kind: Building
+spec:
+  name: Clerics Tent
+  location: [4, 10, -14]
+
+---
+kind: Building
+spec:
+  name: Fighters Arena
+  location: [3, 11, -14]
+
+---
+kind: Building
+spec:
+  name: Paladins Armoury
+  location: [2, 11, -13]
+
+---
+kind: Building
+spec:
+  name: Wizards Tower
+  location: [2, 10, -12]
+
+---
+kind: Building
+spec:
+  name: Blacksmith
+  location: [4, 6, -10]

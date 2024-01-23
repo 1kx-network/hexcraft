@@ -13,7 +13,7 @@ import "Utils.sol";
 using Schema for State;
 
 contract ClericsTent is BuildingKind {
-    function use(Game ds, bytes24 buildingInstance, bytes24 actor, bytes memory /*payload*/ ) public {
+    function use(Game ds, bytes24 buildingInstance, bytes24 actor, bytes memory /*payload*/ ) override public {
 
         State state = getState(ds);
 
@@ -26,6 +26,4 @@ contract ClericsTent is BuildingKind {
         ds.getDispatcher().dispatch(abi.encodeCall(Actions.CRAFT, (buildingInstance)));
     }
 
-    function construct(Game ds, bytes24 buildingInstance, bytes24 /*actor*/, bytes memory /*payload*/ ) public {
-    }
 }
