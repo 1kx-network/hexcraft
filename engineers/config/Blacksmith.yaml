@@ -1,7 +1,7 @@
 ---
 kind: BuildingKind
 spec:
-  category: custom
+  category: factory
   name: Blacksmith
   description: Craft hammer to build more
   model: 05-02

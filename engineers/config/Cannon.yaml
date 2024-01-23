@@ -3,7 +3,7 @@ kind: BuildingKind
 spec:
   category: custom
   name: Cannon
-  description: Helps you attack adjacent buildings, needs a construction hammer to build
+  description: Add more attack to your combat, needs a construction hammer to build
   model: 08-01
   color: 3
   contract:
@@ -16,4 +16,4 @@ spec:
     - name: Green Goo
       quantity: 25
     - name: Blue Goo
-      quantity: 25
+      quantity: 60

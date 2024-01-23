@@ -252,7 +252,7 @@ export default async function update(state) {
     disabled: false,
   });
 
-  console.log({ htmlBlock });
+  // console.log({ htmlBlock });
   return {
     version: 1,
     map: [],
