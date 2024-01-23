@@ -301,7 +301,7 @@ contract Headquarter is BuildingKind {
     function range5(
         bytes24 tile
     ) internal pure returns (bytes24[99] memory results) {
-        int16 range = 5;
+        int16 range = 20;
         int16[4] memory tileCoords = coords(tile);
         uint256 i = 0;
         for (int16 q = tileCoords[1] - range; q <= tileCoords[1] + range; q++) {
