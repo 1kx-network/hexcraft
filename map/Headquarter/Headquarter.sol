@@ -228,13 +228,7 @@ contract Headquarter is BuildingKind {
             )
         );
 
-        // delete playerClassSelected;
-        // dispatcher.dispatch(
-        //     abi.encodeCall(
-        //         Actions.SET_DATA_ON_BUILDING,
-        //         (buildingId, "buildingKindIdBlue", bytes32(0))
-        //     )
-        // );
+        delete crafted;
     }
 
     /*
@@ -247,7 +241,7 @@ contract Headquarter is BuildingKind {
     function hasCrafted(bytes24 actor) public returns (bool) {
         return crafted[actor];
     }
-    
+
     /*
      * Helper functions
      */
