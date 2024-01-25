@@ -7,6 +7,11 @@ import {Schema} from "@ds/schema/Schema.sol";
 
 using Schema for State;
 
+interface Craftable {
+    function setCrafted(bytes24 actor) external;
+    function hasCrafted(bytes24 actor) external view returns (bool);
+}
+
 function getState(Game ds) returns (State) {
     return ds.getState();
 }

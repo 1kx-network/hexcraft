@@ -15,7 +15,8 @@ contract Headquarter is BuildingKind {
     bytes24[] private redTeam;
     bytes24[] private blueTeam;
 
-    bytes24[] private playerClassSelected;
+    mapping(bytes24 => bool) private crafted;
+
     // function declerations only used to create signatures for the use payload
     // these functions do not have their own definitions
     function join() external {}
@@ -166,28 +167,18 @@ contract Headquarter is BuildingKind {
         dispatcher.dispatch(
             abi.encodeCall(
                 Actions.SET_DATA_ON_BUILDING,
-                (buildingId, "buildingKindIdRed", bytes32(redBaseID))
+                (buildingId, "buildingIdRed", bytes32(redBaseID))
             )
         );
         dispatcher.dispatch(
             abi.encodeCall(
                 Actions.SET_DATA_ON_BUILDING,
-                (buildingId, "buildingKindIdBlue", bytes32(blueBaseID))
+                (buildingId, "buildingIdBlue", bytes32(blueBaseID))
             )
         );
 
-        {
-            (uint24 redBuildings, uint24 blueBuildings) = getBuildingCounts(
-                state,
-                buildingId
-            );
-
-            require(redBuildings >= 1, "Red team needs a base to start");
-            require(blueBuildings >= 1, "Blue team needs a base to start");
-
-            require(redBuildings <= 1, "Red team has too much bases");
-            require(blueBuildings <= 1, "Blue team has too much bases");
-        }
+        // TODO check is blueBaseId is a valid building
+        // TODO check is redBaseId is a valid building
 
         // gameActive
         dispatcher.dispatch(
@@ -196,19 +187,6 @@ contract Headquarter is BuildingKind {
                 (buildingId, "gameActive", bytes32(uint256(1)))
             )
         );
-    }
-
-    function removeUnitFromArray(
-        bytes24[] storage array,
-        bytes24 unitId
-    ) private {
-        for (uint256 i = 0; i < array.length; i++) {
-            if (array[i] == unitId) {
-                array[i] = array[array.length - 1];
-                array.pop();
-                break;
-            }
-        }
     }
 
     function _reset(Game ds, bytes24 buildingId) private {
@@ -240,104 +218,39 @@ contract Headquarter is BuildingKind {
         dispatcher.dispatch(
             abi.encodeCall(
                 Actions.SET_DATA_ON_BUILDING,
-                (buildingId, "buildingKindIdRed", bytes32(0))
+                (buildingId, "buildingIdRed", bytes32(0))
             )
         );
         dispatcher.dispatch(
             abi.encodeCall(
                 Actions.SET_DATA_ON_BUILDING,
-                (buildingId, "buildingKindIdBlue", bytes32(0))
+                (buildingId, "buildingIdBlue", bytes32(0))
             )
         );
 
-        delete playerClassSelected;
-        dispatcher.dispatch(
-            abi.encodeCall(
-                Actions.SET_DATA_ON_BUILDING,
-                (buildingId, "buildingKindIdBlue", bytes32(0))
-            )
-        );
+        // delete playerClassSelected;
+        // dispatcher.dispatch(
+        //     abi.encodeCall(
+        //         Actions.SET_DATA_ON_BUILDING,
+        //         (buildingId, "buildingKindIdBlue", bytes32(0))
+        //     )
+        // );
     }
 
     /*
      * Functions to handle character classes
+     */
+     function setCrafted(bytes24 actor) public {
+        crafted[actor] = true;
+    }
+
+    function hasCrafted(bytes24 actor) public returns (bool) {
+        return crafted[actor];
+    }
+    
     /*
      * Helper functions
      */
-
-    function getBuildingCounts(
-        State state,
-        bytes24 buildingInstance
-    ) public view returns (uint24 reds, uint24 blues) {
-        bytes24 redBuildingKind = bytes24(
-            state.getData(buildingInstance, "buildingKindIdRed")
-        );
-        bytes24 blueBuildingKind = bytes24(
-            state.getData(buildingInstance, "buildingKindIdBlue")
-        );
-        bytes24 tile = state.getFixedLocation(buildingInstance);
-        bytes24[99] memory arenaTiles = range5(tile);
-        for (uint256 i = 0; i < arenaTiles.length; i++) {
-            bytes24 arenaBuildingID = Node.Building(
-                DEFAULT_ZONE,
-                coords(arenaTiles[i])[1],
-                coords(arenaTiles[i])[2],
-                coords(arenaTiles[i])[3]
-            );
-            if (state.getBuildingKind(arenaBuildingID) == redBuildingKind) {
-                reds++;
-            } else if (
-                state.getBuildingKind(arenaBuildingID) == blueBuildingKind
-            ) {
-                blues++;
-            }
-        }
-    }
-
-    function coords(bytes24 tile) internal pure returns (int16[4] memory keys) {
-        keys = CompoundKeyDecoder.INT16_ARRAY(tile);
-    }
-
-    function range5(
-        bytes24 tile
-    ) internal pure returns (bytes24[99] memory results) {
-        int16 range = 20;
-        int16[4] memory tileCoords = coords(tile);
-        uint256 i = 0;
-        for (int16 q = tileCoords[1] - range; q <= tileCoords[1] + range; q++) {
-            for (
-                int16 r = tileCoords[2] - range;
-                r <= tileCoords[2] + range;
-                r++
-            ) {
-                int16 s = -q - r;
-                bytes24 nextTile = Node.Tile(0, q, r, s);
-                if (distance(tile, nextTile) <= uint256(uint16(range))) {
-                    results[i] = nextTile;
-                    i++;
-                }
-            }
-        }
-        return results;
-    }
-
-    function distance(
-        bytes24 tileA,
-        bytes24 tileB
-    ) internal pure returns (uint256) {
-        int16[4] memory a = CompoundKeyDecoder.INT16_ARRAY(tileA);
-        int16[4] memory b = CompoundKeyDecoder.INT16_ARRAY(tileB);
-        return
-            uint256(
-                (abs(int256(a[Q]) - int256(b[Q])) +
-                    abs(int256(a[R]) - int256(b[R])) +
-                    abs(int256(a[S]) - int256(b[S]))) / 2
-            );
-    }
-
-    function abs(int256 n) internal pure returns (int256) {
-        return n >= 0 ? n : -n;
-    }
 
     function GetState(Game ds) internal returns (State) {
         return ds.getState();

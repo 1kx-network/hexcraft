@@ -15,13 +15,14 @@ using Schema for State;
 contract WizardsMaze is BuildingKind {
     function use(Game ds, bytes24 buildingInstance, bytes24 actor, bytes memory /*payload*/ ) override public {
 
-        State state = getState(ds);
+        State state = ds.getState();
+        Craftable hq = Craftable(state.getImplementation(HEADQUARTER_BUILDING_KIND_ID));
 
-        require(!(unitHasItem(state, actor, GREATSWORD_OF_DAWN_ITEM_ID)), "You are already carrying the greatsword of dawn");
-        require(!(unitHasItem(state, actor, FRIENDLY_PUPPY_COMPANION_ITEM_ID)), "You are already carrying a Friendly Puppy Companion");
-        require(!(unitHasItem(state, actor, GLOCK_WITH_MAGIC_ITEM_ID)), "You already own a Glock 19 with magic");
-        require(!(unitHasItem(state, actor, STRONG_HOLY_KITESHIELD_ITEM_ID)), "You are already carrying a strong holy Kiteshield");
-        require(!(unitHasItem(state, actor, TAYLOR_SWITFT_GUITAR_ITEM_ID)), "You are already carrying Taylor Swift's Guitar");
+        // check already crafted
+        require(!hq.hasCrafted(actor), "already crafted");
+
+        // mark as crafted
+        hq.setCrafted(actor);
 
         ds.getDispatcher().dispatch(abi.encodeCall(Actions.CRAFT, (buildingInstance)));
     }
