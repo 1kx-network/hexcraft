@@ -26,27 +26,14 @@ export default async function update(state) {
 
   // NOTE: Because the 'action' doesn't get passed the form values we are setting a global value to a function that will
   const start = () => {
-    handleFormSubmit = startSubmit;
-  };
+    const redBaseId = getRedBases(state)[0].id;
+    const blueBaseId = getBlueBases(state)[0].id;
 
-  const startSubmit = (values) => {
-    const selectedBuildingKindBaseRed = values["buildingKindIdRed"];
-    const selectedBuildTypeBaseBlue = values["buildingKindIdBlue"];
-
-    // Verify selected buildings are different from each other
-    if (selectedBuildingKindBaseRed == selectedBuildTypeBaseBlue) {
-      console.error("Team buildings must be different from each other", {
-        selectedBuildingKindBaseRed,
-        selectedBuildTypeBaseBlue,
-      });
-      return;
-    }
-
-    const mobileUnit = getMobileUnit(state);
     const payload = ds.encodeCall(
       "function start(bytes24 redBaseID, bytes24 blueBaseID)",
-      [selectedBuildingKindBaseRed, selectedBuildTypeBaseBlue]
+      [redBaseId, blueBaseId]
     );
+    console.log(payload);
 
     ds.dispatch({
       name: "BUILDING_USE",
@@ -64,11 +51,6 @@ export default async function update(state) {
     });
   };
 
-  // uncomment this to browse the state object in browser console
-  // this will be logged when selecting a unit and then selecting an instance of this building
-  // very spammy for a plugin marked as alwaysActive
-  // logState(state);
-
   // \todo
   // plugins run for a buildingKind and if marked as alwaysActive in the manifest
   // this update will ba called every regardless of whether a building is selected
@@ -82,7 +64,7 @@ export default async function update(state) {
 
   // early out if we don't have any buildings or state isn't ready
   if (!selectedBuilding || !state?.world?.buildings) {
-    console.log("NO HEADQUARTER BUILDING FOUND 8");
+    // console.log("NO HEADQUARTER BUILDING FOUND 8");
     return {
       version: 1,
       map: [],
@@ -110,17 +92,6 @@ export default async function update(state) {
     redTeamLength,
     blueTeamLength,
   } = getHQData(selectedBuilding);
-  // console.log({
-  //   gameActive,
-  //   buildingKindIdRed,
-  //   buildingKindIdBlue,
-  //   redTeamLength,
-  //   blueTeamLength,
-  // });
-  const localBuildings = range5(state, selectedBuilding);
-  const redCount = countBuildings(localBuildings, buildingKindIdRed);
-  const blueCount = countBuildings(localBuildings, buildingKindIdBlue);
-  // console.log({ localBuildings, redCount, blueCount });
 
   // check current game state:
   // - NotStarted : GameActive == false
@@ -186,41 +157,36 @@ export default async function update(state) {
       });
     } else {
       // Check reason why game can't start
-      const waitingForStartCondition =
-        redTeamLength != blueTeamLength || redTeamLength + blueTeamLength < 2;
-      let startConditionMessage = "";
-      if (waitingForStartCondition) {
-        if (redTeamLength + blueTeamLength < 2) {
-          startConditionMessage = "Waiting for players...";
-        } else if (redTeamLength != blueTeamLength) {
-          startConditionMessage = "Teams must be balanced...";
-        }
+      let canStart = true;
+      let startMessage = "Start";
+
+      if (redTeamLength + blueTeamLength < 2) {
+        canStart = false;
+        startMessage = "Waiting for other player...";
+      } else if (redTeamLength != blueTeamLength) {
+        canStart = false;
+        startMessage = "Teams must be balanced...";
+      } else if (getRedBases(state).length !== 1) {
+        canStart = false;
+        startMessage = "Red Team must have one base...";
+      } else if (getBlueBases(state).length !== 1) {
+        canStart = false;
+        startMessage = "Blue Team must have one base...";
       }
 
       buttonList.push({
-        text: waitingForStartCondition ? startConditionMessage : "Start",
+        text: startMessage,
         type: "action",
         action: start,
-        disabled: !canStart || redTeamLength != blueTeamLength,
+        disabled: !canStart,
       });
     }
   }
 
   // Show options to select team buildings
   htmlBlock += `
-            <h3>Select Team Buildings</h3>
-            <p>🔴 Team 🔴</p>
-            ${getBuildingKindSelectHtml(
-              state,
-              redBuildingTopId,
-              "buildingKindIdRed"
-            )}
-            <p>🔵 Team 🔵</p>
-            ${getBuildingKindSelectHtml(
-              state,
-              blueBuildingTopId,
-              "buildingKindIdBlue"
-            )}
+            ${checkRedBaseAmount(state)}
+            ${checkBlueBaseAmount(state)}
         `;
 
   if (gameActive) {
@@ -236,12 +202,16 @@ export default async function update(state) {
 
         `;
 
-    if (redCount !== blueCount) {
-      const redWon = redCount > blueCount;
+    if (getRedBases(state).length < 1) {
       htmlBlock += `
-            <p>Team <b>${redWon ? "RED" : "BLUE"}</b> have won the match!</p>
-            <p style="text-align: center;">${redWon ? "🔴🏆🔴" : "🔵🏆🔵"}</p>
-            `;
+        <p>Team <b>RED</b> have won the match!</p>
+        <p style="text-align: center;">🔴🏆🔴</p>
+      `;
+    } else if (getBlueBases(state).length < 1) {
+      htmlBlock += `
+        <p>Team <b>BLUE</b> have won the match!</p>
+        <p style="text-align: center;">🔵🏆🔵</p>
+      `;
     }
   }
   // Reset is always offered (requires some trust!)
@@ -309,22 +279,43 @@ function getHQTeamUnit(selectedBuilding, team, index) {
 // search the buildings list ofr the display buildings we're gpoing to use
 // for team counts and coutdown
 
-function getBuildingKindSelectHtml(state, buildingTopId, selectId) {
-  return `
-        <select id="${selectId}" name="${selectId}">
-            ${state.world.buildingKinds
-              .filter(
-                (b) =>
-                  b.model && b.model.value.substring(3, 5) === buildingTopId
-              )
-              .map(
-                (b) => `
-                .filter((b) => b.model && b.model.value.substring(3, 5) === buildingTopId)
-                    <option value="${b.id}">${b.name.value}</option>
-                `
-              )}
-        </select>
-    `;
+function getRedBases(state) {
+  return state.world.buildings.filter(
+    (b) => b.kind?.name?.value === "Red Base"
+  );
+}
+
+function getBlueBases(state) {
+  return state.world.buildings.filter(
+    (b) => b.kind?.name?.value === "Blue Base"
+  );
+}
+
+function checkRedBaseAmount(state) {
+  console.log(state);
+  const redBaseAmount = state.world.buildings.filter(
+    (b) => b.kind?.name?.value === "Red Base"
+  ).length;
+  if (redBaseAmount == 0) {
+    return `<p>WARNING: No Red Team Base Found</p>`;
+  } else if (redBaseAmount > 1) {
+    return `<p>WARNING: Red Team has more than one base</p>`;
+  } else {
+    return "";
+  }
+}
+
+function checkBlueBaseAmount(state) {
+  const redBaseAmount = state.world.buildings.filter(
+    (b) => b.kind?.name?.value === "Blue Base"
+  ).length;
+  if (redBaseAmount == 0) {
+    return `<p>WARNING: No Blue Team Base Found</p>`;
+  } else if (redBaseAmount > 1) {
+    return `<p>WARNING: Blue Team has more than one base</p>`;
+  } else {
+    return "";
+  }
 }
 
 // --- Generic State helper functions
@@ -345,69 +336,6 @@ function getEquipeeBags(state, equipee) {
 
 function logState(state) {
   console.log("State sent to pluging:", state);
-}
-
-// get an array of buildings withiin 5 tiles of building
-function range5(state, building) {
-  const range = 20;
-  const tileCoords = getTileCoords(building?.location?.tile?.coords);
-  let i = 0;
-  const foundBuildings = [];
-  for (let q = tileCoords[0] - range; q <= tileCoords[0] + range; q++) {
-    for (let r = tileCoords[1] - range; r <= tileCoords[1] + range; r++) {
-      let s = -q - r;
-      let nextTile = [q, r, s];
-      if (distance(tileCoords, nextTile) <= range) {
-        state?.world?.buildings.forEach((b) => {
-          if (!b?.location?.tile?.coords) return;
-
-          const buildingCoords = getTileCoords(b.location.tile.coords);
-          if (
-            buildingCoords[0] == nextTile[0] &&
-            buildingCoords[1] == nextTile[1] &&
-            buildingCoords[2] == nextTile[2]
-          ) {
-            foundBuildings[i] = b;
-            i++;
-          }
-        });
-      }
-    }
-  }
-  return foundBuildings;
-}
-
-function hexToSignedDecimal(hex) {
-  if (hex.startsWith("0x")) {
-    hex = hex.substr(2);
-  }
-
-  let num = parseInt(hex, 16);
-  let bits = hex.length * 4;
-  let maxVal = Math.pow(2, bits);
-
-  // Check if the highest bit is set (negative number)
-  if (num >= maxVal / 2) {
-    num -= maxVal;
-  }
-
-  return num;
-}
-
-function getTileCoords(coords) {
-  return [
-    hexToSignedDecimal(coords[1]),
-    hexToSignedDecimal(coords[2]),
-    hexToSignedDecimal(coords[3]),
-  ];
-}
-
-function distance(tileCoords, nextTile) {
-  return Math.max(
-    Math.abs(tileCoords[0] - nextTile[0]),
-    Math.abs(tileCoords[1] - nextTile[1]),
-    Math.abs(tileCoords[2] - nextTile[2])
-  );
 }
 
 // -- Building Data
@@ -437,10 +365,3 @@ function getKVPs(buildingInstance) {
     return kvps;
   }, {});
 }
-
-const countBuildings = (buildingsArray, kindID) => {
-  return buildingsArray.filter((b) => b.kind?.id == kindID).length;
-};
-
-// the source for this code is on github where you can find other example buildings:
-// https://github.com/playmint/ds/tree/main/contracts/src/example-plugins
