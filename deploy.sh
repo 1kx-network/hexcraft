@@ -1,12 +1,12 @@
 # use: ./deploy.sh hexwood5 <private_key>
 
 echo "deploying headquarter..."
-ds apply -n $1 -k $2 -f map/Headquarter/Headquarter.yaml
+ds apply -n $1 -k $2 -f game/config/Headquarter.yaml
 echo "-----\n"
 
 echo "deploying team bases..."
-ds apply -n $1 -k $2 -f map/BlueBase/BlueBase.yaml
-ds apply -n $1 -k $2 -f map/RedBase/RedBase.yaml
+ds apply -n $1 -k $2 -f game/config/BlueBase.yaml
+ds apply -n $1 -k $2 -f game/config/RedBase.yaml
 echo "-----\n"
 
 echo "deploying class system buildings..."

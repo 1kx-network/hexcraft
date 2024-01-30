@@ -9,18 +9,13 @@ import {BuildingKind} from "@ds/ext/BuildingKind.sol";
 
 using Schema for State;
 
-bytes24 constant HEADQUARTER_BUILDING_KIND_ID = 0xbe92755c0000000000000000818eec0b0000000000000004;
+import "Utils.sol";
 
-interface Headquarter {
-    function isGameActive() external view returns (bool);
-}
-
-contract BlueBase is BuildingKind {
+contract RedBase is BuildingKind {
     function use(Game ds, bytes24 buildingInstance, bytes24, /*actor*/ bytes memory /*payload*/ ) override public {
         ds.getDispatcher().dispatch(abi.encodeCall(Actions.CRAFT, (buildingInstance)));
     }
-
-    function construct(Game ds, bytes24 /*buildingInstance*/, bytes24 actor, bytes memory /*payload*/ ) override public {
+    function construct(Game ds, bytes24 /*buildingInstance*/, bytes24 /*actor*/, bytes memory /*payload*/ ) override public {
 
         State state = ds.getState();
         Headquarter hq = Headquarter(state.getImplementation(HEADQUARTER_BUILDING_KIND_ID));
