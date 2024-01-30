@@ -1,7 +1,7 @@
 kind: BuildingKind
 spec:
   name: Headquarter
-  description: "Play Defense of the Hexwood"
+  description: "Play Battle for Hexwood"
   category: custom
   model: 11-07
   color: 1
