@@ -7,7 +7,6 @@ import {Schema} from "@ds/schema/Schema.sol";
 import {Actions} from "@ds/actions/Actions.sol";
 import {BuildingKind} from "@ds/ext/BuildingKind.sol";
 
-import "Register.sol";
 import "Utils.sol";
 
 using Schema for State;
@@ -20,7 +19,7 @@ contract BasicFactory is BuildingKind {
     
     function construct(Game ds, bytes24 /*buildingInstance*/, bytes24 actor, bytes memory /*payload*/ ) override public {
 
-        State state = getState(ds);
+        State state = ds.getState();
 
         (bytes24 bag, uint8 slot, uint64 balance) = getItemSlot(state, actor, CRAFTING_HAMMER_ITEM_ID);
         require((bag != 0), "you need a crafting hammer to construct this building");

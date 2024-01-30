@@ -181,35 +181,26 @@ export default async function update(state) {
         disabled: !canStart,
       });
     }
-  }
 
-  // Show options to select team buildings
-  htmlBlock += `
+    // Show options to select team buildings
+    htmlBlock += `
             ${checkRedBaseAmount(state)}
             ${checkBlueBaseAmount(state)}
         `;
-
+  }
   if (gameActive) {
-    // Display selected team buildings
-    const buildingKindRed =
-      state.world.buildingKinds.find((b) => b.id === buildingKindIdRed) || {};
-    const buildingKindBlue =
-      state.world.buildingKinds.find((b) => b.id === buildingKindIdBlue) || {};
     htmlBlock += `
-            <h3>Team Buildings:</h3>
-            <p>Team 🔴: ${buildingKindRed.name?.value}</p>
-            <p>Team 🔵: ${buildingKindBlue.name?.value}</p></br>
-
+            <h3>Game Active!</h3>
         `;
 
-    if (getRedBases(state).length < 1) {
+    if (getBlueBases(state).length < 1) {
       htmlBlock += `
-        <p>Team <b>RED</b> have won the match!</p>
+        <p>Team <b>RED</b> has won the match!</p>
         <p style="text-align: center;">🔴🏆🔴</p>
       `;
-    } else if (getBlueBases(state).length < 1) {
+    } else if (getRedBases(state).length < 1) {
       htmlBlock += `
-        <p>Team <b>BLUE</b> have won the match!</p>
+        <p>Team <b>BLUE</b> has won the match!</p>
         <p style="text-align: center;">🔵🏆🔵</p>
       `;
     }

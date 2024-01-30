@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Actions} from "@ds/actions/Actions.sol";
-import {BuildingKind} from "@ds/ext/BuildingKind.sol";
-import {Dispatcher} from "cog/IDispatcher.sol";
 import {Game} from "cog/IGame.sol";
 import {State} from "cog/IState.sol";
 import {Schema} from "@ds/schema/Schema.sol";
+import {Actions} from "@ds/actions/Actions.sol";
+import {BuildingKind} from "@ds/ext/BuildingKind.sol";
 
-import "Register.sol";
 import "Utils.sol";
 
 using Schema for State;

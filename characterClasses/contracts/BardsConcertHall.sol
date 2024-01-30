@@ -7,7 +7,6 @@ import {Schema} from "@ds/schema/Schema.sol";
 import {Actions} from "@ds/actions/Actions.sol";
 import {BuildingKind} from "@ds/ext/BuildingKind.sol";
 
-import "Register.sol";
 import "Utils.sol";
 
 using Schema for State;

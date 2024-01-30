@@ -16,6 +16,7 @@ contract Headquarter is BuildingKind {
     bytes24[] private blueTeam;
 
     bytes24[] private crafted;
+    bool private gameActive;
 
     // function declerations only used to create signatures for the use payload
     // these functions do not have their own definitions
@@ -35,7 +36,7 @@ contract Headquarter is BuildingKind {
 
         // decode payload and call one of _join, _start, _claim or _reset
         if ((bytes4)(payload) == this.join.selector) {
-            _join(ds, state, actor, buildingInstance);
+            _join(ds, actor, buildingInstance);
         } else if ((bytes4)(payload) == this.start.selector) {
             (bytes24 redBaseID, bytes24 blueBaseId) = abi.decode(
                 payload[4:],
@@ -53,16 +54,10 @@ contract Headquarter is BuildingKind {
 
     function _join(
         Game ds,
-        State state,
         bytes24 unitId,
         bytes24 buildingId
     ) private {
         // check game not in progress
-        bool gameActive = uint256(state.getData(buildingId, "gameActive")) == 1;
-
-        // bool gameActive = state.getDataBool(buildingId, "gameActive");
-        // bool gameActive = state.getDataUint256(buildingId, "gameActive") == 1;
-        // bool gameActive = uint256(state.getData(buildingId, "gameActive")) == 1;
         if (gameActive) {
             revert("Can't join while a game is already active");
         }
@@ -180,13 +175,7 @@ contract Headquarter is BuildingKind {
         // TODO check is blueBaseId is a valid building
         // TODO check is redBaseId is a valid building
 
-        // gameActive
-        dispatcher.dispatch(
-            abi.encodeCall(
-                Actions.SET_DATA_ON_BUILDING,
-                (buildingId, "gameActive", bytes32(uint256(1)))
-            )
-        );
+        gameActive = true;
     }
 
     function _reset(Game ds, bytes24 buildingId) private {
@@ -195,12 +184,8 @@ contract Headquarter is BuildingKind {
         // todo - do we check if all claims have been made ?
         // for now allwing reset any time which requires some trust :)
 
-        dispatcher.dispatch(
-            abi.encodeCall(
-                Actions.SET_DATA_ON_BUILDING,
-                (buildingId, "gameActive", bytes32(uint256(0)))
-            )
-        );
+        gameActive = false;
+
         delete redTeam;
         delete blueTeam;
         dispatcher.dispatch(
@@ -245,6 +230,10 @@ contract Headquarter is BuildingKind {
             }
         }
         return false;
+    }
+
+    function isGameActive() public view returns (bool) {
+        return gameActive;
     }
 
     /*
