@@ -15,7 +15,7 @@ contract Headquarter is BuildingKind {
     bytes24[] private redTeam;
     bytes24[] private blueTeam;
 
-    mapping(bytes24 => bool) private crafted;
+    bytes24[] private crafted;
 
     // function declerations only used to create signatures for the use payload
     // these functions do not have their own definitions
@@ -235,11 +235,16 @@ contract Headquarter is BuildingKind {
      * Functions to handle character classes
      */
      function setCrafted(bytes24 actor) public {
-        crafted[actor] = true;
+        crafted.push(actor);
     }
 
-    function hasCrafted(bytes24 actor) public returns (bool) {
-        return crafted[actor];
+    function hasCrafted(bytes24 actor) public view returns (bool) {
+        for (uint i=0; i < crafted.length; i++) {
+            if (crafted[i] == actor) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /*
