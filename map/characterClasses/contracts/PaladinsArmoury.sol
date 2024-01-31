@@ -7,11 +7,11 @@ import {Schema} from "@ds/schema/Schema.sol";
 import {Actions} from "@ds/actions/Actions.sol";
 import {BuildingKind} from "@ds/ext/BuildingKind.sol";
 
-import "Utils.sol";
+import "./Utils.sol";
 
 using Schema for State;
 
-contract ClericsTent is BuildingKind {
+contract PaladinsArmoury is BuildingKind {
     function use(Game ds, bytes24 buildingInstance, bytes24 actor, bytes memory /*payload*/ ) override public {
 
         State state = ds.getState();

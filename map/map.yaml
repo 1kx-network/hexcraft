@@ -1952,7 +1952,7 @@ spec:
 ---
 kind: Building
 spec:
-  name: Wizards Tower
+  name: Wizards Maze
   location: [-11, 10, 1]
 
 ---
@@ -1968,7 +1968,7 @@ spec:
 kind: Building
 spec:
   name: Blue Base
-  location: [-10, 8, 2]
+  location: [3, 8, -11]
 
 ---
 kind: Building
@@ -1997,7 +1997,7 @@ spec:
 ---
 kind: Building
 spec:
-  name: Wizards Tower
+  name: Wizards Maze
   location: [2, 10, -12]
 
 ---
