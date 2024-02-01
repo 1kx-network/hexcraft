@@ -9,12 +9,13 @@ import {BuildingKind} from "@ds/ext/BuildingKind.sol";
 
 using Schema for State;
 
-import "Utils.sol";
+import "./Utils.sol";
 
-contract RedBase is BuildingKind {
+contract BlueBase is BuildingKind {
     function use(Game ds, bytes24 buildingInstance, bytes24, /*actor*/ bytes memory /*payload*/ ) override public {
         ds.getDispatcher().dispatch(abi.encodeCall(Actions.CRAFT, (buildingInstance)));
     }
+
     function construct(Game ds, bytes24 /*buildingInstance*/, bytes24 /*actor*/, bytes memory /*payload*/ ) override public {
 
         State state = ds.getState();
